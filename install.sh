@@ -1,13 +1,13 @@
 echo "";
-echo "                              _       _        ";
-echo "       _ __ ___  _ __ ___ ___| |_ __ | | _____ ";
-echo "      | '_ \` _ \| '__/ __|_  / | '_ \| |/ / __|";
-echo "      | | | | | | | | (__ / /| | | | |   <\__ \\";
-echo "      |_| |_| |_|_|  \___/___|_|_| |_|_|\_\___/";
-echo "                                         ";
+echo "      			 _______       _____  ";
+echo "      			|___  / |     / ____|";
+echo "      			   / /| |    | (___  ";
+echo "      			  / / | |     \___ \ ";
+echo "       			 / /__| |____ ____) |";
+echo "      			/_____|______|_____/ ";
 echo "                                                       ";
 
-echo "     Easy-to-configure archlinux+i3 install script ";
+echo "     Easy-to-configure archlinux + GNOME install script ";
 echo "        for maximum comfort and minimum hassles ";
 echo "";
 echo "";
@@ -24,17 +24,17 @@ mv ./mirrorlist /etc/pacman.d/mirrorlist
 pacman -Syyy
 
 # formatting disk
-sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/sda
+sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/nvme1n1
   g # gpt partitioning
   n # new partition
     # default: primary partition
     # default: partition 1
-  +500M # 500 mb on boot partition
+  +200M # 500 mb on boot partition
     # default: yes if asked
   n # new partition
     # default: primary partition
     # default: partition 2
-  +80G # 80 gb for root partition
+  +60G # 80 gb for root partition
     # default: yes if asked
   n # new partition
     # default: primary partition
@@ -48,28 +48,27 @@ sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/sda
 EOF
 
 # outputting partition changes
-fdisk -l /dev/sda
+fdisk -l /dev/nvme1n1
 
 # partition filesystem formatting
-yes | mkfs.fat -F32 /dev/sda1
-yes | mkfs.ext4 /dev/sda2
-yes | mkfs.ext4 /dev/sda3
+yes | mkfs.fat -F32 /dev/nvme1n1p1
+yes | mkfs.ext4 /dev/nvme1n1p2
+yes | mkfs.ext4 /dev/nvme1n1p3
 
 # disk mount
-mount /dev/sda2 /mnt
+mount /dev/nvme1n1p2 /mnt
 mkdir /mnt/boot
 mkdir /mnt/home
-mount /dev/sda1 /mnt/boot
-mount /dev/sda3 /mnt/home
+mount /dev/nvme1n1p1 /mnt/boot
+mount /dev/nvme1n1p3 /mnt/home
 
 # pacstrap-ping desired disk
-pacstrap /mnt base base-devel vim grub i3-wm networkmanager i3status rofi feh i3lock \
-os-prober efibootmgr ntfs-3g links alacritty neofetch git zsh intel-ucode cpupower \
-xorg-server xorg-xinit ttf-dejavu ttf-liberation ttf-inconsolata ttf-fira-code noto-fonts \
-chromium firefox code atom nvidia nvidia-settings xf86-video-intel flameshot \
-pulseaudio pasystray pamixer telegram-desktop go python python-pip wget openssh xorg-xrandr \
-maim imagemagick xclip cmatrix pinta xawtv light ranger ttf-roboto playerctl papirus-icon-theme \
-obs-studio
+pacstrap /mnt base base-devel vim grub networkmanager \
+os-prober efibootmgr ntfs-3g neofetch git zsh intel-ucode cpupower \
+xorg-xinit ttf-dejavu ttf-fira-code \
+firefox atom nvidia nvidia-settings \
+telegram-desktop go python python-pip wget \
+ranger papirus-icon-theme dialog
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -79,11 +78,6 @@ arch-chroot /mnt pacman -Syyy
 
 # setting right timezone
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Rome /etc/localtime
-
-# enabling font presets for better font rendering
-arch-chroot /mnt ln -s /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
-arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
-arch-chroot /mnt ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
 
 # synchronizing timer
 arch-chroot /mnt hwclock --systohc
@@ -99,15 +93,15 @@ arch-chroot /mnt locale-gen
 arch-chroot /mnt echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
 
 # setting machine name
-arch-chroot /mnt echo "lenooks" >> /mnt/etc/hostname
+arch-chroot /mnt echo "leenooks" >> /mnt/etc/hostname
 
 # setting hosts file
 arch-chroot /mnt echo "127.0.0.1 localhost" >> /mnt/etc/hosts
 arch-chroot /mnt echo "::1 localhost" >> /mnt/etc/hosts
-arch-chroot /mnt echo "127.0.1.1 lenooks.localdomain lenooks" >> /mnt/etc/hosts
+arch-chroot /mnt echo "127.0.1.1 leenooks.localdomain leenooks" >> /mnt/etc/hosts
 
 # making sudoers do sudo stuff without requiring password typing
-arch-chroot /mnt sed -ie 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers
+arch-chroot /mnt sed -ie 's/# %wheel ALL=(ALL)/g' /etc/sudoers
 
 # make initframs
 arch-chroot /mnt mkinitcpio -p linux
@@ -116,12 +110,12 @@ arch-chroot /mnt mkinitcpio -p linux
 echo "Insert password for root:"
 arch-chroot /mnt passwd
 
-# making user mrcz
-arch-chroot /mnt useradd -m -G wheel -s /bin/zsh mrcz
+# making user mattiazorzan
+arch-chroot /mnt useradd -m -G wheel -s /bin/zsh mattiazorzan
 
 # setting mrcz password
-echo "Insert password for mrcz:"
-arch-chroot /mnt passwd mrcz
+echo "Insert password for mattiazorzan:"
+arch-chroot /mnt passwd mattiazorzan
 
 # installing grub bootloader
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot  --bootloader-id=GRUB --removable
@@ -130,51 +124,23 @@ arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot  --bootl
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 # changing governor to performance
-arch-chroot /mnt echo "governor='performance'" >> /mnt/etc/default/cpupower
+arch-chroot /mnt echo "governor='powersave'" >> /mnt/etc/default/cpupower
 
 # making services start at boot
 arch-chroot /mnt systemctl enable cpupower.service
 arch-chroot /mnt systemctl enable NetworkManager.service
-
-# making i3 default for startx for both root and mrcz
-arch-chroot /mnt echo "exec i3" >> /mnt/root/.xinitrc
-arch-chroot /mnt echo "exec i3" >> /mnt/home/mrcz/.xinitrc
+arch-chroot /mnt systemctl enable gdm.service
 
 # installing yay
-arch-chroot /mnt sudo -u mrcz git clone https://aur.archlinux.org/yay.git /home/mrcz/yay_tmp_install
-arch-chroot /mnt sudo -u mrcz /bin/zsh -c "cd /home/mrcz/yay_tmp_install && yes | makepkg -si"
-arch-chroot /mnt rm -rf /home/mrcz/yay_tmp_install
-
-# installing polybar, spotify, discord, font-manager and fontawesome4 font
-arch-chroot /mnt sudo -u mrcz yay -S polybar --noconfirm
-arch-chroot /mnt sudo -u mrcz yay -S spotify --noconfirm
-arch-chroot /mnt sudo -u mrcz yay -S discord --noconfirm
-arch-chroot /mnt sudo -u mrcz yay -S font-manager --noconfirm
-arch-chroot /mnt sudo -u mrcz yay -S otf-font-awesome-4 --noconfirm
+arch-chroot /mnt sudo -u mattiazorzan git clone https://aur.archlinux.org/yay.git /home/mrcz/yay_tmp_install
+arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/yay_tmp_install && yes | makepkg -si"
+arch-chroot /mnt rm -rf /home/mattiazorzan/yay_tmp_install
 
 # installing oh-my-zsh
-arch-chroot /mnt sudo -u mrcz /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # installing pi theme for zsh
-arch-chroot /mnt sudo -u mrcz /bin/zsh -c "wget -O /home/mrcz/.oh-my-zsh/themes/pi.zsh-theme https://raw.githubusercontent.com/tobyjamesthomas/pi/master/pi.zsh-theme"
-
-# installing vundle
-arch-chroot /mnt sudo -u mrcz mkdir /home/mrcz/.vim
-arch-chroot /mnt sudo -u mrcz mkdir /home/mrcz/.vim/bundle
-arch-chroot /mnt sudo -u mrcz git clone https://github.com/VundleVim/Vundle.vim.git /home/mrcz/.vim/bundle/Vundle.vim
-
-# installing config files
-arch-chroot /mnt sudo -u mrcz mkdir /home/mrcz/GitHub
-arch-chroot /mnt sudo -u mrcz git clone https://github.com/maaaybe/mrczlnks /home/mrcz/GitHub/mrczlnks
-arch-chroot /mnt sudo -u mrcz /bin/zsh -c "chmod 700 /home/mrcz/GitHub/mrczlnks/install_configs.sh"
-arch-chroot /mnt sudo -u mrcz /bin/zsh -c "cd /home/mrcz/GitHub/mrczlnks && ./install_configs.sh"
-
-# create folder for screenshots
-arch-chroot /mnt sudo -u mrcz mkdir /home/mrcz/Screenshots
-
-# create pictures folder and moving default wallpaper
-arch-chroot /mnt sudo -u mrcz mkdir /home/mrcz/Pictures
-arch-chroot /mnt sudo -u mrcz cp -r /home/mrcz/GitHub/mrczlnks/wallpapers/ /home/mrcz/Pictures/
+arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "wget -O /home/mattiazorzan/.oh-my-zsh/themes/oxide.zsh-theme https://raw.githubusercontent.com/dikiaap/dotfiles/blob/master/.oh-my-zsh/themes/oxide.zsh-theme"
 
 # unmounting all mounted partitions
 umount -R /mnt
