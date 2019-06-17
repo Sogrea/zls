@@ -1,10 +1,9 @@
-# mrczlnks
+# ZLS - Zeta Linux Setup
 
-mrczlnks is a free to use Arch Linux + i3-wm install script.
+zls is a free to use Arch Linux + GNOME install script.
 
 It is primarly designed for my own usage but free for you all to use and modify to fit your own purposes.
-
-It's all done by hand... because doing it by feet would have been too difficult. :P
+TVB Marcioz <3
 
 ## Disclaimer
 
@@ -39,13 +38,6 @@ chmod 700 ./install.sh
 ```
 
 - Once the script finishes, the system will reboot automatically after 5 seconds and you can remove the USB drive previously inserted and start using the new operating system.
-
-# Incoming features
-
-- Disk selection as script parameter
-- Hostname selection as script parameter
-- User selection as script parameter
-- GPU driver (intel, nvidia, amdgpu) as script parameter
 
 ### License
 
