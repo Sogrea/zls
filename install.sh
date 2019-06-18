@@ -29,12 +29,12 @@ sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/nvme1n1
   n # new partition
     # default: primary partition
     # default: partition 1
-  +200M # 500 mb on boot partition
+  +500M # 500 mb on boot partition
     # default: yes if asked
   n # new partition
     # default: primary partition
     # default: partition 2
-  +60G # 80 gb for root partition
+  +60G # 60 gb for root partition
     # default: yes if asked
   n # new partition
     # default: primary partition
@@ -65,10 +65,10 @@ mount /dev/nvme1n1p3 /mnt/home
 # pacstrap-ping desired disk
 pacstrap /mnt base base-devel vim grub networkmanager \
 os-prober efibootmgr ntfs-3g neofetch git zsh intel-ucode cpupower \
-xorg-xinit ttf-dejavu ttf-fira-code \
-firefox atom nvidia nvidia-settings \
-telegram-desktop go python python-pip wget \
-ranger papirus-icon-theme dialog
+xorg-xinit ttf-fira-code ranger papirus-icon-theme dialog \
+firefox atom nvidia nvidia-settings telegram-desktop go python  \
+python-pip wget
+
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -113,7 +113,7 @@ arch-chroot /mnt passwd
 # making user mattiazorzan
 arch-chroot /mnt useradd -m -G wheel -s /bin/zsh mattiazorzan
 
-# setting mrcz password
+# setting mattaizorzan password
 echo "Insert password for mattiazorzan:"
 arch-chroot /mnt passwd mattiazorzan
 
@@ -132,7 +132,7 @@ arch-chroot /mnt systemctl enable NetworkManager.service
 arch-chroot /mnt systemctl enable gdm.service
 
 # installing yay
-arch-chroot /mnt sudo -u mattiazorzan git clone https://aur.archlinux.org/yay.git /home/mrcz/yay_tmp_install
+arch-chroot /mnt sudo -u mattiazorzan git clone https://aur.archlinux.org/yay.git /home/mattiazorzan/yay_tmp_install
 arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/yay_tmp_install && yes | makepkg -si"
 arch-chroot /mnt rm -rf /home/mattiazorzan/yay_tmp_install
 
