@@ -24,7 +24,7 @@ mv ./mirrorlist /etc/pacman.d/mirrorlist
 pacman -Syyy
 
 # formatting disk
-sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/nvme1n1
+sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/nvme0n1
   g # gpt partitioning
   n # new partition
     # default: primary partition
@@ -34,7 +34,7 @@ sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/nvme1n1
   n # new partition
     # default: primary partition
     # default: partition 2
-  +60G # 60 gb for root partition
+  +80G # 60 gb for root partition
     # default: yes if asked
   n # new partition
     # default: primary partition
@@ -48,27 +48,25 @@ sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/nvme1n1
 EOF
 
 # outputting partition changes
-fdisk -l /dev/nvme1n1
+fdisk -l /dev/nvme0n1
 
 # partition filesystem formatting
-yes | mkfs.fat -F32 /dev/nvme1n1p1
-yes | mkfs.ext4 /dev/nvme1n1p2
-yes | mkfs.ext4 /dev/nvme1n1p3
+yes | mkfs.fat -F32 /dev/nvme0n1p1
+yes | mkfs.ext4 /dev/nvme0n1p2
+yes | mkfs.ext4 /dev/nvme0n1p3
 
 # disk mount
-mount /dev/nvme1n1p2 /mnt
+mount /dev/nvme0n1p2 /mnt
 mkdir /mnt/boot
 mkdir /mnt/home
-mount /dev/nvme1n1p1 /mnt/boot
-mount /dev/nvme1n1p3 /mnt/home
+mount /dev/nvme0n1p1 /mnt/boot
+mount /dev/nvme0n1p3 /mnt/home
 
 # pacstrap-ping desired disk
 pacstrap /mnt base base-devel vim grub networkmanager \
-os-prober efibootmgr ntfs-3g neofetch git zsh intel-ucode cpupower \
-xorg-xinit ttf-fira-code ranger papirus-icon-theme dialog \
-firefox atom nvidia nvidia-settings telegram-desktop go python  \
-python-pip wget
-
+os-prober efibootmgr ntfs-3g git intel-ucode cpupower \
+xorg-xinit dialog firefox nvidia nvidia-settings wget \
+gnome gnome-extra gdm
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -101,7 +99,7 @@ arch-chroot /mnt echo "::1 localhost" >> /mnt/etc/hosts
 arch-chroot /mnt echo "127.0.1.1 leenooks.localdomain leenooks" >> /mnt/etc/hosts
 
 # making sudoers do sudo stuff without requiring password typing
-arch-chroot /mnt sed -ie 's/# %wheel ALL=(ALL)/g' /etc/sudoers
+arch-chroot /mnt sed -ie 's/# %wheel ALL=(ALL)/%wheel ALL=(ALL)/g' /etc/sudoers
 
 # make initframs
 arch-chroot /mnt mkinitcpio -p linux
@@ -111,7 +109,7 @@ echo "Insert password for root:"
 arch-chroot /mnt passwd
 
 # making user mattiazorzan
-arch-chroot /mnt useradd -m -G wheel -s /bin/zsh mattiazorzan
+arch-chroot /mnt useradd -m -G wheel mattiazorzan
 
 # setting mattaizorzan password
 echo "Insert password for mattiazorzan:"
@@ -130,17 +128,6 @@ arch-chroot /mnt echo "governor='powersave'" >> /mnt/etc/default/cpupower
 arch-chroot /mnt systemctl enable cpupower.service
 arch-chroot /mnt systemctl enable NetworkManager.service
 arch-chroot /mnt systemctl enable gdm.service
-
-# installing yay
-arch-chroot /mnt sudo -u mattiazorzan git clone https://aur.archlinux.org/yay.git /home/mattiazorzan/yay_tmp_install
-arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/yay_tmp_install && yes | makepkg -si"
-arch-chroot /mnt rm -rf /home/mattiazorzan/yay_tmp_install
-
-# installing oh-my-zsh
-arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-
-# installing pi theme for zsh
-arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "wget -O /home/mattiazorzan/.oh-my-zsh/themes/oxide.zsh-theme https://raw.githubusercontent.com/dikiaap/dotfiles/blob/master/.oh-my-zsh/themes/oxide.zsh-theme"
 
 # unmounting all mounted partitions
 umount -R /mnt
