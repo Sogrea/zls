@@ -64,7 +64,7 @@ mount /dev/nvme0n1p3 /mnt/home
 
 # pacstrap-ping desired disk
 pacstrap /mnt base base-devel vim grub networkmanager \
-git intel-ucode cpupower curl xorg xorg-server\
+git intel-ucode cpupower curl xorg xorg-server go\
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
 gnome gnome-extra gdm neofetch
 
