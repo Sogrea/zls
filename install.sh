@@ -64,9 +64,9 @@ mount /dev/nvme0n1p3 /mnt/home
 
 # pacstrap-ping desired disk
 pacstrap /mnt base base-devel vim grub networkmanager \
-os-prober efibootmgr ntfs-3g git intel-ucode cpupower \
+git intel-ucode cpupower curl xorg xorg-server\
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
-gnome gnome-extra gdm
+gnome gnome-extra gdm neofetch
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
