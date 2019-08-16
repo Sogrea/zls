@@ -1,6 +1,6 @@
 # ZLS - Zeta Linux Setup
 
-zls is a free to use Arch Linux + GNOME install script.
+zls is a free to use Arch Linux + i3 install script.
 
 It is primarly designed for my own usage but free for you all to use and modify to fit your own purposes.
 TVB Marcioz <3
