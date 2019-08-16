@@ -6,9 +6,7 @@ echo "      			  / / | |     \___ \ ";
 echo "       			 / /__| |____ ____) |";
 echo "      			/_____|______|_____/ ";
 echo "                                                       ";
-
-echo "     Easy-to-configure archlinux + GNOME install script ";
-echo "        for maximum comfort and minimum hassles ";
+echo "         ArchLinux + i3 install script ";
 echo "";
 echo "";
 
@@ -64,9 +62,10 @@ mount /dev/nvme0n1p3 /mnt/home
 
 # pacstrap-ping desired disk
 pacstrap /mnt base base-devel vim grub networkmanager \
-git intel-ucode cpupower curl xorg xorg-server go\
+git zsh intel-ucode cpupower curl xorg xorg-server go \
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
-gnome gnome-extra gdm neofetch
+pulseaudio pamixer light feh rofi i3-lock neofetch \
+alacritty atom
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -76,6 +75,11 @@ arch-chroot /mnt pacman -Syyy
 
 # setting right timezone
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Rome /etc/localtime
+
+# enabling font presets for better font rendering
+arch-chroot /mnt ln -s /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
+arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
+arch-chroot /mnt ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
 
 # synchronizing timer
 arch-chroot /mnt hwclock --systohc
@@ -127,7 +131,31 @@ arch-chroot /mnt echo "governor='powersave'" >> /mnt/etc/default/cpupower
 # making services start at boot
 arch-chroot /mnt systemctl enable cpupower.service
 arch-chroot /mnt systemctl enable NetworkManager.service
-arch-chroot /mnt systemctl enable gdm.service
+
+# making i3 default for startx
+arch-chroot /mnt echo "xrandr --setprovideroutputsource modesetting NVIDIA-0\nxrandr --auto\n\n~/.fehbg &\n\nexec i3" >> /mnt/root/.xinitrc
+arch-chroot /mnt echo "xrandr --setprovideroutputsource modesetting NVIDIA-0\nxrandr --auto\n\n~/.fehbg &\n\nexec i3" >> /mnt/home/mattiazorzan/.xinitrc
+
+# installing yay
+arch-chroot /mnt sudo -u mattiazorzan git clone https://aur.archlinux.org/yay.git /home/mattiazorzan/yay_tmp_install
+arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/yay_tmp_install && yes | makepkg -si"
+arch-chroot /mnt rm -rf /home/mattiazorzan/yay_tmp_install
+
+# installing oh-my-zsh
+arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+# installing i3-gaps and polybar
+arch-chroot /mnt sudo -u mattiazorzan yay -S i3-gaps --noconfirm
+arch-chroot /mnt sudo -u mattiazorzan yay -S polybar --noconfirm
+
+# installing fonts
+arch-chroot /mnt sudo -u mattiazorzan mkdir /home/mattiazorzan/fonts_tmp_folder
+arch-chroot /mnt sudo -u mattiazorzan sudo mkdir /usr/share/fonts/OTF/
+# font awesome 5 brands
+arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/fonts_tmp_folder && wget -O fontawesome.zip https://github.com/FortAwesome/Font-Awesome/releases/download/5.9.0/fontawesome-free-5.9.0-desktop.zip && unzip fontawesome.zip"
+arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "sudo cp /home/mattiazorzan/fonts_tmp_folder/fontawesome-free-5.9.0-desktop/otfs/Font\ Awesome\ 5\ Brands-Regular-400.otf /usr/share/fonts/OTF/"
+# removing fonts tmp folder
+arch-chroot /mnt sudo -u mattiazorzan rm -rf /home/mattiazorzan/fonts_tmp_folder
 
 # unmounting all mounted partitions
 umount -R /mnt
