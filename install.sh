@@ -65,7 +65,7 @@ pacstrap /mnt base base-devel vim grub networkmanager \
 git zsh intel-ucode cpupower curl xorg xorg-server go \
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
 pulseaudio pamixer light feh rofi i3-lock neofetch \
-alacritty atom
+alacritty atom libsecret gnome-keyring libgnome-keyring
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -133,8 +133,8 @@ arch-chroot /mnt systemctl enable cpupower.service
 arch-chroot /mnt systemctl enable NetworkManager.service
 
 # making i3 default for startx
-arch-chroot /mnt echo "xrandr --setprovideroutputsource modesetting NVIDIA-0\nxrandr --auto\n\n~/.fehbg &\n\nexec i3" >> /mnt/root/.xinitrc
-arch-chroot /mnt echo "xrandr --setprovideroutputsource modesetting NVIDIA-0\nxrandr --auto\n\n~/.fehbg &\n\nexec i3" >> /mnt/home/mattiazorzan/.xinitrc
+arch-chroot /mnt echo "xrandr --setprovideroutputsource modesetting NVIDIA-0\nxrandr --auto\n\ndbus-update-activation-environment --systemd DISPLAY\neval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)\nexport SSH_AUTH_SOCK\n\n~/.fehbg &\n\nexec i3" >> /mnt/root/.xinitrc
+arch-chroot /mnt echo "xrandr --setprovideroutputsource modesetting NVIDIA-0\nxrandr --auto\n\ndbus-update-activation-environment --systemd DISPLAY\neval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)\nexport SSH_AUTH_SOCK\n\n~/.fehbg &\n\nexec i3" >> /mnt/home/mattiazorzan/.xinitrc
 
 # installing yay
 arch-chroot /mnt sudo -u mattiazorzan git clone https://aur.archlinux.org/yay.git /home/mattiazorzan/yay_tmp_install
