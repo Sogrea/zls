@@ -64,7 +64,7 @@ mount /dev/nvme0n1p3 /mnt/home
 pacstrap /mnt base base-devel vim grub networkmanager \
 git zsh intel-ucode cpupower curl xorg xorg-server go \
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
-pulseaudio pamixer light feh rofi i3-lock neofetch \
+pulseaudio pamixer light feh rofi i3-lock neofetch xorg-xrandr \
 alacritty atom libsecret gnome-keyring libgnome-keyring
 
 # generating fstab
