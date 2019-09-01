@@ -64,7 +64,7 @@ mount /dev/nvme0n1p3 /mnt/home
 pacstrap /mnt base base-devel vim grub networkmanager \
 git zsh intel-ucode cpupower curl xorg xorg-server go \
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
-pulseaudio pamixer light feh rofi i3-lock neofetch xorg-xrandr \
+pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 alacritty atom libsecret gnome-keyring libgnome-keyring
 
 # generating fstab
@@ -147,6 +147,7 @@ arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "$(curl -fsSL https://raw.gith
 # installing i3-gaps and polybar
 arch-chroot /mnt sudo -u mattiazorzan yay -S i3-gaps --noconfirm
 arch-chroot /mnt sudo -u mattiazorzan yay -S polybar --noconfirm
+arch-chroot /mnt sudo -u mattiazorzan yay -S i3lock-fancy --noconfirm
 
 # installing fonts
 arch-chroot /mnt sudo -u mattiazorzan mkdir /home/mattiazorzan/fonts_tmp_folder
