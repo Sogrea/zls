@@ -65,7 +65,8 @@ pacstrap /mnt base base-devel vim grub networkmanager \
 git zsh intel-ucode cpupower curl xorg xorg-server go \
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
 pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
-kitty atom libsecret gnome-keyring libgnome-keyring
+kitty atom libsecret gnome-keyring libgnome-keyring \
+os-prober efibootmgr ntfs-3g
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
