@@ -66,7 +66,8 @@ git zsh intel-ucode cpupower curl xorg xorg-server go \
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
 pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
-os-prober efibootmgr ntfs-3g
+os-prober efibootmgr ntfs-3g unzip wireless_tools \
+iw wpa_supplicant iwd ppp dhcpcd netctl
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -134,16 +135,13 @@ arch-chroot /mnt systemctl enable cpupower.service
 arch-chroot /mnt systemctl enable NetworkManager.service
 
 # making i3 default for startx
-arch-chroot /mnt echo "xrandr --setprovideroutputsource modesetting NVIDIA-0\nxrandr --auto\n\ndbus-update-activation-environment --systemd DISPLAY\neval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)\nexport SSH_AUTH_SOCK\n\n~/.fehbg &\n\nexec i3" >> /mnt/root/.xinitrc
-arch-chroot /mnt echo "xrandr --setprovideroutputsource modesetting NVIDIA-0\nxrandr --auto\n\ndbus-update-activation-environment --systemd DISPLAY\neval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)\nexport SSH_AUTH_SOCK\n\n~/.fehbg &\n\nexec i3" >> /mnt/home/mattiazorzan/.xinitrc
+arch-chroot /mnt wget -O /mnt/root/.xinitrc "https://www.github.com/zetaemme/dotfiles/xinitrc/.xinitrc"
+arch-chroot /mnt wget -O /mnt/home/mattiazorzan/.xinitrc "https://www.github.com/zetaemme/dotfiles/xinitrc/.xinitrc"
 
 # installing yay
 arch-chroot /mnt sudo -u mattiazorzan git clone https://aur.archlinux.org/yay.git /home/mattiazorzan/yay_tmp_install
 arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/yay_tmp_install && yes | makepkg -si"
 arch-chroot /mnt rm -rf /home/mattiazorzan/yay_tmp_install
-
-# installing oh-my-zsh
-arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # installing i3-gaps and polybar
 arch-chroot /mnt sudo -u mattiazorzan yay -S i3-gaps --noconfirm
