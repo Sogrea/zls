@@ -67,7 +67,7 @@ xorg-xinit dialog firefox nvidia nvidia-settings wget \
 pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
 os-prober efibootmgr ntfs-3g unzip wireless_tools \
-iw wpa_supplicant iwd ppp dhcpcd netctl
+iw wpa_supplicant iwd ppp dhcpcd netctl linux-firmware
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
