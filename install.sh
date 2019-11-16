@@ -67,7 +67,8 @@ xorg-xinit dialog firefox nvidia nvidia-settings wget \
 pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
 os-prober efibootmgr ntfs-3g unzip wireless_tools \
-iw wpa_supplicant iwd ppp dhcpcd netctl linux-firmware
+iw wpa_supplicant iwd ppp dhcpcd netctl linux-firmware \
+compton
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -135,12 +136,12 @@ arch-chroot /mnt systemctl enable cpupower.service
 arch-chroot /mnt systemctl enable NetworkManager.service
 
 # making i3 default for startx
-arch-chroot /mnt wget -O /mnt/root/.xinitrc "https://www.github.com/zetaemme/dotfiles/xinitrc/.xinitrc"
-arch-chroot /mnt wget -O /mnt/home/mattiazorzan/.xinitrc "https://www.github.com/zetaemme/dotfiles/xinitrc/.xinitrc"
+arch-chroot /mnt echo "exec i3" >> /mnt/root/.xinitrc
+arch-chroot /mnt echo "exec i3" /mnt/home/mattiazorzan/.xinitrc
 
 # installing yay
 arch-chroot /mnt sudo -u mattiazorzan git clone https://aur.archlinux.org/yay.git /home/mattiazorzan/yay_tmp_install
-arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/yay_tmp_install && yes | makepkg -si"
+arch-chroot /mnt sudo -u mattiazorzan "cd /home/mattiazorzan/yay_tmp_install && yes | makepkg -si"
 arch-chroot /mnt rm -rf /home/mattiazorzan/yay_tmp_install
 
 # installing i3-gaps and polybar
@@ -152,10 +153,23 @@ arch-chroot /mnt sudo -u mattiazorzan yay -S i3lock-fancy --noconfirm
 arch-chroot /mnt sudo -u mattiazorzan mkdir /home/mattiazorzan/fonts_tmp_folder
 arch-chroot /mnt sudo -u mattiazorzan sudo mkdir /usr/share/fonts/OTF/
 # font awesome 5 brands
-arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/fonts_tmp_folder && wget -O fontawesome.zip https://github.com/FortAwesome/Font-Awesome/releases/download/5.9.0/fontawesome-free-5.9.0-desktop.zip && unzip fontawesome.zip"
-arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "sudo cp /home/mattiazorzan/fonts_tmp_folder/fontawesome-free-5.9.0-desktop/otfs/Font\ Awesome\ 5\ Brands-Regular-400.otf /usr/share/fonts/OTF/"
+arch-chroot /mnt sudo -u mattiazorzan "cd /home/mattiazorzan/fonts_tmp_folder && wget -O fontawesome.zip https://github.com/FortAwesome/Font-Awesome/releases/download/5.9.0/fontawesome-free-5.9.0-desktop.zip && unzip fontawesome.zip"
+arch-chroot /mnt sudo -u mattiazorzan "sudo cp /home/mattiazorzan/fonts_tmp_folder/fontawesome-free-5.9.0-desktop/otfs/Font\ Awesome\ 5\ Brands-Regular-400.otf /usr/share/fonts/OTF/"
+# material font
+arch-chroot /mnt sudo -u mattiazorzan "cd /home/mattiazorzan/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/Material.ttf"
+arch-chroot /mnt sudo -u mattiazorzan "sudo cp /home/mattiazorzan/fonts_tmp_folder/Material.ttf /usr/share/fonts/OTF/"
+# iosevka font
+arch-chroot /mnt sudo -u mattiazorzan "cd /home/mattiazorzan/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/iosevka-regular.ttf"
+arch-chroot /mnt sudo -u mattiazorzan "sudo cp /home/mattiazorzan/fonts_tmp_folder/iosevka-regular.ttf /usr/share/fonts/OTF/"
 # removing fonts tmp folder
 arch-chroot /mnt sudo -u mattiazorzan rm -rf /home/mattiazorzan/fonts_tmp_folder
+
+# installing configs
+arch-chroot /mnt sudo -u mattiazorzan mkdir /home/mattiazorzan/GitHub
+arch-chroot /mnt sudo -u mattiazorzan git clone https://github.com/zetaemme/dotfiles /home/mattiazorzan/GitHub/dotfiles
+arch-chroot /mnt sudo -u mattiazorzan git clone https://github.com/zetaemme/zls /home/mattiazorzan/GitHub/zls
+arch-chroot /mnt sudo -u mattiazorzan "chmod 700 /home/mattiazorzan/GitHub/zls/install_configs.sh"
+arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/GitHub/zls && ./install_configs.sh"
 
 # unmounting all mounted partitions
 umount -R /mnt
