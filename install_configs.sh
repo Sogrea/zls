@@ -9,5 +9,6 @@ cp -rf ../dotfiles/zsh/.zshrc ../../
 cp -rf ../dotfiles/vim/.vimrc ../../
 cp -rf ../dotfiles/alias/.aliasrc ../../
 cp -rf ../dotfiles/mirrorlist/.get_updated_mirrirlist.sh ../../
+cp -rf ../dotfiles/intel_driver/20-intel.conf ../../../../etc/X11/xorg.conf.d/
 
 chmod 700 ../../.get_updated_mirrirlist.sh
