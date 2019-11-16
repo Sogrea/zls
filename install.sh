@@ -68,7 +68,7 @@ pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
 os-prober efibootmgr ntfs-3g unzip wireless_tools \
 iw wpa_supplicant iwd ppp dhcpcd netctl linux-firmware \
-compton
+compton xf86-video-intel mesa bumblebee
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -134,6 +134,7 @@ arch-chroot /mnt echo "governor='powersave'" >> /mnt/etc/default/cpupower
 # making services start at boot
 arch-chroot /mnt systemctl enable cpupower.service
 arch-chroot /mnt systemctl enable NetworkManager.service
+arch-chroot /mnt systemctl enable bumblebeed.service
 
 # making i3 default for startx
 arch-chroot /mnt echo "exec i3" >> /mnt/root/.xinitrc
