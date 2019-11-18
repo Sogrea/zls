@@ -62,13 +62,13 @@ mount /dev/nvme0n1p3 /mnt/home
 
 # pacstrap-ping desired disk
 pacstrap /mnt base base-devel vim grub networkmanager \
-git zsh intel-ucode cpupower curl xorg xorg-server go \
+git zsh intel-ucode curl xorg xorg-server go tlp \
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
 pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
 os-prober efibootmgr ntfs-3g unzip wireless_tools \
 iw wpa_supplicant iwd ppp dhcpcd netctl linux-firmware \
-picom xf86-video-intel mesa bumblebee
+picom xf86-video-intel mesa bumblebee powertop
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -128,11 +128,8 @@ arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootlo
 # making grub auto config
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
-# changing governor to performance
-arch-chroot /mnt echo "governor='powersave'" >> /mnt/etc/default/cpupower
-
 # making services start at boot
-arch-chroot /mnt systemctl enable cpupower.service
+arch-chroot /mnt systemctl enable tlp.service
 arch-chroot /mnt systemctl enable NetworkManager.service
 arch-chroot /mnt systemctl enable bumblebeed.service
 
@@ -162,6 +159,9 @@ arch-chroot /mnt sudo -u mattiazorzan "sudo cp /home/mattiazorzan/fonts_tmp_fold
 # iosevka font
 arch-chroot /mnt sudo -u mattiazorzan "cd /home/mattiazorzan/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/iosevka-regular.ttf"
 arch-chroot /mnt sudo -u mattiazorzan "sudo cp /home/mattiazorzan/fonts_tmp_folder/iosevka-regular.ttf /usr/share/fonts/OTF/"
+# meslo for powerline font
+arch-chroot /mnt sudo -u mattiazorzan "cd /home/mattiazorzan/fonts_tmp_folder && wget https://github.com/powerline/fonts/blob/master/Meslo%20Slashed/Meslo%20LG%20M%20Regular%20for%20Powerline.ttf"
+arch-chroot /mnt sudo -u mattiazorzan "sudo cp /home/mattiazorzan/fonts_tmp_folder/Meslo\ LG\ M\ Regular\ for\ Powerline.ttf /usr/share/fonts/OTF/"
 # removing fonts tmp folder
 arch-chroot /mnt sudo -u mattiazorzan rm -rf /home/mattiazorzan/fonts_tmp_folder
 
