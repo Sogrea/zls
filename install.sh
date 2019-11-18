@@ -68,7 +68,8 @@ pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
 os-prober efibootmgr ntfs-3g unzip wireless_tools \
 iw wpa_supplicant iwd ppp dhcpcd netctl linux-firmware \
-picom xf86-video-intel mesa bumblebee powertop
+picom xf86-video-intel mesa bumblebee powertop \
+pulseaudio-alsa pulseaudio-bluetooth bluez-utils
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -105,7 +106,7 @@ arch-chroot /mnt echo "127.0.0.1 localhost" >> /mnt/etc/hosts
 arch-chroot /mnt echo "::1 localhost" >> /mnt/etc/hosts
 arch-chroot /mnt echo "127.0.1.1 leenooks.localdomain leenooks" >> /mnt/etc/hosts
 
-# making sudoers do sudo stuff without requiring password typing
+# making sudoers do sudo stuff
 arch-chroot /mnt sed -ie 's/# %wheel ALL=(ALL)/%wheel ALL=(ALL)/g' /etc/sudoers
 
 # make initframs
@@ -118,7 +119,7 @@ arch-chroot /mnt passwd
 # making user mattiazorzan
 arch-chroot /mnt useradd -m -G wheel mattiazorzan
 
-# setting mattaizorzan password
+# setting mattiazorzan password
 echo "Insert password for mattiazorzan:"
 arch-chroot /mnt passwd mattiazorzan
 
@@ -132,6 +133,10 @@ arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 arch-chroot /mnt systemctl enable tlp.service
 arch-chroot /mnt systemctl enable NetworkManager.service
 arch-chroot /mnt systemctl enable bumblebeed.service
+arch-chroot /mnt systemctl enable bluetooth.service
+
+# Bluetooth autostart
+arch-chroot /mnt sed -ie 's/#AutoStart=false\%AutoStart=true' /etc/bluetooth/main.conf 
 
 # making i3 default for startx
 arch-chroot /mnt echo "exec i3" >> /mnt/root/.xinitrc
@@ -171,6 +176,9 @@ arch-chroot /mnt sudo -u mattiazorzan git clone https://github.com/zetaemme/dotf
 arch-chroot /mnt sudo -u mattiazorzan git clone https://github.com/zetaemme/zls /home/mattiazorzan/GitHub/zls
 arch-chroot /mnt sudo -u mattiazorzan "chmod 700 /home/mattiazorzan/GitHub/zls/install_configs.sh"
 arch-chroot /mnt sudo -u mattiazorzan /bin/zsh -c "cd /home/mattiazorzan/GitHub/zls && ./install_configs.sh"
+
+# Adding device connection instructions to the user home directory
+arch-chroot /mnt sudo -u mattiazorzan "cp /home/mattiazorzan/GitHub/zls/bluetooth.txt /home/mattiazorzan/"
 
 # unmounting all mounted partitions
 umount -R /mnt

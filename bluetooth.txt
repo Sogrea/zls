@@ -1,0 +1,27 @@
+In order to pair bluetooth headsets run
+	bluetoothctl
+
+Run, in order
+	1. power on
+	2. agent on
+	3. default-agent
+	4. scan on
+
+When your device appears run
+	scan off
+then copy the MAC Address of the chosen device
+
+Run
+	1. pair ${your_device_mac_address}
+	2. connect ${your_device_mac_address}
+
+If you get org.bluez.Error.Failed quit and kill pulseaudio with
+	pulseaudio -k
+then retry
+
+In order to auto-connect your device add the following to /etc/deafult.pa
+	# automatically switch to newly-connected devices
+	load-module module-switch-on-connect
+
+then, in bluetoothctl
+	trust ${your_device_mac_address}
