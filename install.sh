@@ -68,7 +68,7 @@ pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
 os-prober efibootmgr ntfs-3g unzip wireless_tools \
 iw wpa_supplicant iwd ppp dhcpcd netctl linux-firmware \
-compton xf86-video-intel mesa bumblebee
+picom xf86-video-intel mesa bumblebee
 
 # generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
