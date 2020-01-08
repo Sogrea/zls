@@ -24,9 +24,12 @@ mv ./mirrorlist /etc/pacman.d/mirrorlist
 pacman -Syyy
 
 # Choose which disk you wanna use
-ls /dev | grep "nvme\|sda\|sdb"
-yes | sed 2q
-read -p "Choose which disk you wanna use: (omit '/dev/')" disk
+sudo fdisk -l | grep 'Disk /dev/' | awk '{print $2,$3,$4}' | sed 's/,$//' | fzf | sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}' | read disk
+
+# Checks if the 'fzf' is installed, if not it installs it
+if pacman -Qi fzf > /dev/null ; then else
+  pacman -S --noconfirm fzf
+fi
 
 # Formatting disk
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/$disk
@@ -55,37 +58,27 @@ EOF
 # Outputting partition changes
 fdisk -l /dev/$disk
 
-# Partition filesystem formatting
-if [ $disk = "sda" ] then 
-  yes | mkfs.fat -F32 /dev/${disk}1
-  yes | mkfs.ext4 /dev/${disk}2
-  yes | mkfs.ext4 /dev/${disk}3
-  
-  mount /dev/${disk}2 /mnt
-  mkdir /mnt/boot
-  mkdir /mnt/home
-  mount /dev/${disk}1 /mnt/boot
-  mount /dev/${disk}3 /mnt/home
-elif [ $disk = "sdb" ] then
-  yes | mkfs.fat -F32 /dev/${disk}1
-  yes | mkfs.ext4 /dev/${disk}2
-  yes | mkfs.ext4 /dev/${disk}3
-  
-  mount /dev/${disk}2 /mnt
-  mkdir /mnt/boot
-  mkdir /mnt/home
-  mount /dev/${disk}1 /mnt/boot
-  mount /dev/${disk}3 /mnt/home
-else 
+# Partition filesystem formatting and mount
+if [ ${disk:0:4} = "nvme" ] then 
   yes | mkfs.fat -F32 /dev/${disk}p1
   yes | mkfs.ext4 /dev/${disk}p2
   yes | mkfs.ext4 /dev/${disk}p3
-  
+
   mount /dev/${disk}p2 /mnt
   mkdir /mnt/boot
   mkdir /mnt/home
   mount /dev/${disk}p1 /mnt/boot
   mount /dev/${disk}p3 /mnt/home
+else 
+  yes | mkfs.fat -F32 /dev/${disk}1
+  yes | mkfs.ext4 /dev/${disk}2
+  yes | mkfs.ext4 /dev/${disk}3
+
+  mount /dev/${disk}2 /mnt
+  mkdir /mnt/boot
+  mkdir /mnt/home
+  mount /dev/${disk}1 /mnt/boot
+  mount /dev/${disk}3 /mnt/home
 fi
 
 # Pacstrap-ping desired disk
@@ -177,9 +170,9 @@ arch-chroot /mnt sudo -u $username "cd /home/$username/yay_tmp_install && yes | 
 arch-chroot /mnt rm -rf /home/$username/yay_tmp_install
 
 # Installing i3-gaps and polybar
-arch-chroot /mnt sudo -u $username yay -S i3-gaps --noconfirm
-arch-chroot /mnt sudo -u $username yay -S polybar --noconfirm
-arch-chroot /mnt sudo -u $username yay -S i3lock-fancy --noconfirm
+arch-chroot /mnt sudo -u $username yay -S --noconfirm i3-gaps 
+arch-chroot /mnt sudo -u $username yay -S --noconfirm polybar 
+arch-chroot /mnt sudo -u $username yay -S --noconfirm i3lock-fancy 
 
 # Installing fonts
 arch-chroot /mnt sudo -u $username mkdir /home/$username/fonts_tmp_folder
@@ -205,9 +198,6 @@ arch-chroot /mnt sudo -u $username git clone https://github.com/zetaemme/dotfile
 arch-chroot /mnt sudo -u $username git clone https://github.com/zetaemme/zls /home/$username/GitHub/zls
 arch-chroot /mnt sudo -u $username "chmod 700 /home/$username/GitHub/zls/install_configs.sh"
 arch-chroot /mnt sudo -u $username /bin/zsh -c "cd /home/$username/GitHub/zls && ./install_configs.sh"
-
-# Adding device connection instructions to the user home directory
-arch-chroot /mnt sudo -u $username "cp /home/$username/GitHub/zls/bluetooth.txt /home/$username/"
 
 # Unmounting all mounted partitions
 umount -R /mnt
