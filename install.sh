@@ -23,13 +23,13 @@ mv ./mirrorlist /etc/pacman.d/mirrorlist
 # Updating mirrors
 pacman -Syyy
 
-# Choose which disk you wanna use
-sudo fdisk -l | grep 'Disk /dev/' | awk '{print $2,$3,$4}' | sed 's/,$//' | fzf | sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}' | read disk
-
 # Checks if the 'fzf' is installed, if not it installs it
 if pacman -Qi fzf > /dev/null ; then else
   pacman -S --noconfirm fzf
 fi
+
+# Choose which disk you wanna use
+sudo fdisk -l | grep 'Disk /dev/' | awk '{print $2,$3,$4}' | sed 's/,$//' | fzf | sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}' | read disk
 
 # Formatting disk
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/$disk
