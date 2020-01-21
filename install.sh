@@ -29,7 +29,7 @@ if pacman -Qi fzf > /dev/null ; then else
 fi
 
 # Choose which disk you wanna use
-sudo fdisk -l | grep 'Disk /dev/' | awk '{print $2,$3,$4}' | sed 's/,$//' | fzf | sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}' | read disk
+disk=$(sudo fdisk -l | grep 'Disk /dev/' | awk '{print $2,$3,$4}' | sed 's/,$//' | fzf | sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}')
 
 # Formatting disk
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/$disk
@@ -89,7 +89,7 @@ pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
 os-prober efibootmgr ntfs-3g unzip wireless_tools \
 iw wpa_supplicant iwd ppp dhcpcd netctl linux-firmware \
-picom xf86-video-intel mesa bumblebee powertop
+picom xf86-video-intel mesa bumblebee powertop linux firewalld
 
 # Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -159,6 +159,7 @@ arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 arch-chroot /mnt systemctl enable tlp.service
 arch-chroot /mnt systemctl enable NetworkManager.service
 arch-chroot /mnt systemctl enable bumblebeed.service
+arch-chroot /mnt systemctl enable firewalld.service
 
 # Making i3 default for startx
 arch-chroot /mnt echo "exec i3" >> /mnt/root/.xinitrc
