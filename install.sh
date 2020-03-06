@@ -1,13 +1,13 @@
 #!/bin/bash
 
 echo "";
-echo "      			 _______       _____  ";
+echo "      			 _______       _____ ";
 echo "      			|___  / |     / ____|";
 echo "      			   / /| |    | (___  ";
 echo "      			  / / | |     \___ \ ";
 echo "       			 / /__| |____ ____) |";
 echo "      			/_____|______|_____/ ";
-echo "                                                       ";
+echo "                                       ";
 echo "         ArchLinux + i3 install script ";
 echo "";
 echo "";
@@ -42,7 +42,7 @@ sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/$disk
   n # new partition
     # default: primary partition
     # default: partition 2
-  +100G # 60 gb for root partition
+  +100G # 100 gb for root partition
     # default: yes if asked
   n # new partition
     # default: primary partition
@@ -59,7 +59,8 @@ EOF
 fdisk -l /dev/$disk
 
 # Partition filesystem formatting and mount
-if [ ${disk:0:4} = "nvme" ] then 
+if [ ${disk:0:4} = "nvme" ]
+then 
   yes | mkfs.fat -F32 /dev/${disk}p1
   yes | mkfs.ext4 /dev/${disk}p2
   yes | mkfs.ext4 /dev/${disk}p3
@@ -88,8 +89,8 @@ xorg-xinit dialog firefox nvidia nvidia-settings wget \
 pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
 os-prober efibootmgr ntfs-3g unzip wireless_tools \
-iw wpa_supplicant iwd ppp dhcpcd netctl linux-firmware \
-picom xf86-video-intel mesa bumblebee powertop
+iw wpa_supplicant iwd ppp dhcpcd netctl linux linux-firmware \
+linux-headers picom xf86-video-intel mesa bumblebee powertop
 
 # Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
