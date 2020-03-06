@@ -29,7 +29,7 @@ if pacman -Qi fzf > /dev/null ; then else
 fi
 
 # Choose which disk you wanna use
-sudo fdisk -l | grep 'Disk /dev/' | awk '{print $2,$3,$4}' | sed 's/,$//' | fzf | sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}' | read disk
+disk=$(sudo fdisk -l | grep 'Disk /dev/' | awk '{print $2,$3,$4}' | sed 's/,$//' | fzf | sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}')
 
 # Formatting disk
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/$disk
@@ -160,6 +160,7 @@ arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 arch-chroot /mnt systemctl enable tlp.service
 arch-chroot /mnt systemctl enable NetworkManager.service
 arch-chroot /mnt systemctl enable bumblebeed.service
+arch-chroot /mnt systemctl enable firewalld.service
 
 # Making i3 default for startx
 arch-chroot /mnt echo "exec i3" >> /mnt/root/.xinitrc
