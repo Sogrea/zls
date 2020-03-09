@@ -1,9 +1,11 @@
-# ZLS - Zeta Linux Setup
+![logo](zls.png)
 
-zls is a free to use Arch Linux + i3 install script.
+## What is ZLS
 
-It is primarly designed for my own usage but free for you all to use and modify to fit your own purposes.
-TVB Marcioz <3
+```zls``` is a free to use Arch Linux + i3 install script.
+
+It is primarly designed for my own usage but free for you all to use and modify to fit your own purposes.<br>
+This was forked from ```ilbuonmarcio/mrczlnks``` and we're both developing our personal "distros", maybe someday we'll merge them.
 
 ## Disclaimer
 
