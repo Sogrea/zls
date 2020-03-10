@@ -88,7 +88,7 @@ git zsh intel-ucode curl xorg xorg-server go tlp \
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
 pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
 kitty atom libsecret gnome-keyring libgnome-keyring \
-os-prober efibootmgr ntfs-3g unzip wireless_tools \
+os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
 iw wpa_supplicant iwd ppp dhcpcd netctl linux linux-firmware \
 linux-headers picom xf86-video-intel mesa bumblebee powertop
 
@@ -166,6 +166,10 @@ arch-chroot /mnt systemctl enable firewalld.service
 arch-chroot /mnt echo "exec i3" >> /mnt/root/.xinitrc
 arch-chroot /mnt echo "exec i3" /mnt/home/$username/.xinitrc
 
+# Makepkg optimization
+arch-chroot /mnt sed -i -e 's/#MAKEFLAGS="-j2"/MAKEFLAGS=-j'$(nproc --ignore 1)'/' -e 's/-march=x86-64 -mtune=generic/-march=native/' -e 's/xz -c -z/xz -c -z -T '$(nproc --ignore 1)'/' /etc/makepkg.conf
+arch-chroot /mnt sed -ie 's/!ccache/ccache/g' /etc/makepkg.conf
+
 # Installing yay
 arch-chroot /mnt sudo -u $username git clone https://aur.archlinux.org/yay.git /home/$username/yay_tmp_install
 arch-chroot /mnt sudo -u $username "cd /home/$username/yay_tmp_install && yes | makepkg -si"
@@ -208,7 +212,7 @@ umount -R /mnt
 sync
 
 echo ""
-echo "INSTALLATION COMPLETE! enjoy :)"
+echo "INSTALLATION COMPLETE!"
 echo ""
 
 sleep 3
