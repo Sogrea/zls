@@ -23,10 +23,8 @@ mv ./mirrorlist /etc/pacman.d/mirrorlist
 # Updating mirrors
 pacman -Syyy
 
-# Checks if the 'fzf' is installed, if not it installs it
-if pacman -Qi fzf > /dev/null ; then else
-  pacman -S --noconfirm fzf
-fi
+# Installs FZF
+pacman -S --noconfirm fzf
 
 # Choose which disk you wanna use
 disk=$(sudo fdisk -l | grep 'Disk /dev/' | awk '{print $2,$3,$4}' | sed 's/,$//' | fzf | sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}')
@@ -87,10 +85,13 @@ pacstrap /mnt base base-devel vim grub networkmanager \
 git zsh intel-ucode curl xorg xorg-server go tlp \
 xorg-xinit dialog firefox nvidia nvidia-settings wget \
 pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
-kitty atom libsecret gnome-keyring libgnome-keyring \
+kitty atom libsecret gnome-keyring libgnome-keyring blueman\
 os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
 iw wpa_supplicant iwd ppp dhcpcd netctl linux linux-firmware \
-linux-headers picom xf86-video-intel mesa bumblebee powertop
+linux-headers picom xf86-video-intel mesa bumblebee powertop \
+bluez bluez-utils pulseaudio-bluetooth gtk3 lightdm lightdm-webkit2-greeter \
+lightdm-webkit2-greeter-litarvan
+
 
 # Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -156,11 +157,16 @@ arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootlo
 # Making grub auto config
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
+# Activate 'btusb' kernel module
+arch-chroot /mnt modprobe btusb
+
 # Making services start at boot
 arch-chroot /mnt systemctl enable tlp.service
 arch-chroot /mnt systemctl enable NetworkManager.service
 arch-chroot /mnt systemctl enable bumblebeed.service
+arch-chroot /mnt systemctl enable lightdm.service
 arch-chroot /mnt systemctl enable firewalld.service
+arch-chroot /mnt systemctl enable bluetooth.service
 
 # Making i3 default for startx
 arch-chroot /mnt echo "exec i3" >> /mnt/root/.xinitrc
@@ -178,14 +184,12 @@ arch-chroot /mnt rm -rf /home/$username/yay_tmp_install
 # Installing i3-gaps and polybar
 arch-chroot /mnt sudo -u $username yay -S --noconfirm i3-gaps 
 arch-chroot /mnt sudo -u $username yay -S --noconfirm polybar 
-arch-chroot /mnt sudo -u $username yay -S --noconfirm i3lock-fancy 
+arch-chroot /mnt sudo -u $username yay -S --noconfirm otf-font-awesome
 
 # Installing fonts
 arch-chroot /mnt sudo -u $username mkdir /home/$username/fonts_tmp_folder
 arch-chroot /mnt sudo -u $username sudo mkdir /usr/share/fonts/OTF/
-# Font Awesome 5 brands
-arch-chroot /mnt sudo -u $username "cd /home/$username/fonts_tmp_folder && wget -O fontawesome.zip https://github.com/FortAwesome/Font-Awesome/releases/download/5.9.0/fontawesome-free-5.9.0-desktop.zip && unzip fontawesome.zip"
-arch-chroot /mnt sudo -u $username "sudo cp /home/$username/fonts_tmp_folder/fontawesome-free-5.9.0-desktop/otfs/Font\ Awesome\ 5\ Brands-Regular-400.otf /usr/share/fonts/OTF/"
+
 # Material font
 arch-chroot /mnt sudo -u $username "cd /home/$username/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/Material.ttf"
 arch-chroot /mnt sudo -u $username "sudo cp /home/$username/fonts_tmp_folder/Material.ttf /usr/share/fonts/OTF/"
@@ -215,4 +219,5 @@ echo ""
 echo "INSTALLATION COMPLETE!"
 echo ""
 
-sleep 3
+# Waits 3 secs then reboot
+sleep 3 && reboot
