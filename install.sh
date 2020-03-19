@@ -210,10 +210,10 @@ arch-chroot /mnt sudo -u $username "chmod 700 /home/$username/GitHub/zls/install
 arch-chroot /mnt sudo -u $username /bin/zsh -c "cd /home/$username/GitHub/zls && ./install_configs.sh"
 
 # Setting lightdm greeter
-arch-chroot /mnt sudo -u $username sed -i '102s/^#.*greeter-session=/s/^# //' /etc/lightdm/lightdm.conf
+arch-chroot /mnt sudo -u $username sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
 arch-chroot /mnt sudo -u $username sed -i '102s/^greeter-session=/ s/$/lightdm-webkit2-greeter/' /etc/lightdm/lightdm.conf
 
-arch-chroot /mnt sudo -u $username sed -i '111s/^#.*session-startup-script=/s/^# //' /etc/lightdm/lightdm.conf
+arch-chroot /mnt sudo -u $username sed -i '111s/^#.*session-startup-script=/s/^#//' /etc/lightdm/lightdm.conf
 arch-chroot /mnt sudo -u $username sed -i '111s/^greeter-session=/ s/$//home/zetaemme/.fehbg' /etc/lightdm/lightdm.conf
 
 arch-chroot /mnt sudo -u $username sed -i '21s/^webkit_theme/ s/$/ litarvan' /etc/lightdm/lightdm-webkit2-greeter.conf
