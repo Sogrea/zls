@@ -92,7 +92,7 @@ if [ $install_type = "Intel" ]; then
 	if [ $de = "i3" ]; then
   		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh intel-ucode curl xorg xorg-server go tlp \
-  		xorg-xinit dialog firefox nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget \
   		pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
   		kitty libsecret gnome-keyring libgnome-keyring \
   		os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
@@ -102,14 +102,14 @@ if [ $install_type = "Intel" ]; then
 	elif [ $de = "GNOME" ]; then
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh intel-ucode curl xorg xorg-server go tlp ccache \
-  		xorg-xinit dialog firefox nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 gnome gnome-extra gdm
 	else
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh intel-ucode curl xorg xorg-server go tlp ccache \
-  		xorg-xinit dialog firefox nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 lightdm deepin deepin-extra
@@ -118,7 +118,7 @@ else
 	if [ $de = "i3" ]; then
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh amd-ucode curl xorg xorg-server go tlp \
-  		xorg-xinit dialog firefox nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget \
   		pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
   		kitty libsecret gnome-keyring libgnome-keyring \
   		os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
@@ -128,14 +128,14 @@ else
 	elif [ $de = "GNOME" ]; then
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh amd-ucode curl xorg xorg-server go tlp ccache \
-  		xorg-xinit dialog firefox nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 gnome gnome-extra gdm
 	else
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh amd-ucode curl xorg xorg-server go tlp ccache \
-  		xorg-xinit dialog firefox nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 lightdm deepin deepin-extra
@@ -244,7 +244,8 @@ arch-chroot /mnt rm -rf /home/${username}/yay_tmp_install
 if [ $de = "i3" ]; then
 	# Installing i3-gaps and polybar
 	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm i3-gaps 
-	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm polybar 
+	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm polybar
+	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm brave-bin
 	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm otf-font-awesome
 
 	# Installing fonts
@@ -278,9 +279,13 @@ if [ $de = "i3" ]; then
 	arch-chroot /mnt sudo -u ${username} sed -i '111s/^session-startup-script=/ s/$//home/zetaemme/.fehbg' /etc/lightdm/lightdm.conf
 
 	arch-chroot /mnt sudo -u ${username} sed -i '21s/^webkit_theme/ s/$/ litarvan' /etc/lightdm/lightdm-webkit2-greeter.conf
-elif [ $de = "Deepin" ]; then
-	arch-chroot /mnt sudo -u ${username} sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
-	arch-chroot /mnt sudo -u ${username} sed -i '102s/^greeter-session=/ s/$/lightdm-deepin-greeter/' /etc/lightdm/lightdm.conf
+else
+	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm brave-bin
+	
+	if [ $de = "Deepin" ]; then
+		arch-chroot /mnt sudo -u ${username} sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
+		arch-chroot /mnt sudo -u ${username} sed -i '102s/^greeter-session=/ s/$/lightdm-deepin-greeter/' /etc/lightdm/lightdm.conf
+	fi
 fi
 
 # Unmounting all mounted partitions
