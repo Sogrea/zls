@@ -91,10 +91,10 @@ de=$(printf "Deepin\ni3\nGNOME" | fzf)
 if [ $install_type = "Intel" ]; then
 	if [ $de = "i3" ]; then
   		pacstrap /mnt base base-devel vim grub networkmanager \
-  		git zsh intel-ucode curl xorg xorg-server go tlp \
-  		xorg-xinit dialog nvidia nvidia-settings wget \
+  		git zsh intel-ucode curl xorg xorg-server go tlp termite \
+  		xorg-xinit dialog nvidia nvidia-settings wget bmon \
   		pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
-  		kitty libsecret gnome-keyring libgnome-keyring \
+  		kitty libsecret gnome-keyring libgnome-keyring dnsutils \
   		os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
   		iw wpa_supplicant iwd ppp dhcpcd netctl linux linux-firmware \
   		linux-headers picom xf86-video-intel mesa bumblebee powertop \
@@ -117,10 +117,10 @@ if [ $install_type = "Intel" ]; then
 else
 	if [ $de = "i3" ]; then
 		pacstrap /mnt base base-devel vim grub networkmanager \
-  		git zsh amd-ucode curl xorg xorg-server go tlp \
-  		xorg-xinit dialog nvidia nvidia-settings wget \
+  		git zsh amd-ucode curl xorg xorg-server go tlp termite \
+  		xorg-xinit dialog nvidia nvidia-settings wget bmon \
   		pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
-  		kitty libsecret gnome-keyring libgnome-keyring \
+  		kitty libsecret gnome-keyring libgnome-keyring dnsutils \
   		os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
   		iw wpa_supplicant iwd ppp dhcpcd netctl linux linux-firmware \
   		linux-headers picom xf86-video-intel mesa bumblebee powertop \
