@@ -92,7 +92,7 @@ if [ $install_type = "Intel" ]; then
 	if [ $de = "i3" ]; then
   		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh intel-ucode curl xorg xorg-server go tlp termite \
-  		xorg-xinit dialog nvidia nvidia-settings wget bmon \
+  		xorg-xinit dialog nvidia nvidia-settings wget bmon ttf-opensans \
   		pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
   		kitty libsecret gnome-keyring libgnome-keyring dnsutils \
   		os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
@@ -102,14 +102,14 @@ if [ $install_type = "Intel" ]; then
 	elif [ $de = "GNOME" ]; then
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh intel-ucode curl xorg xorg-server go tlp ccache \
-  		xorg-xinit dialog nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget ttf-opensans \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 gnome gnome-extra gdm
 	else
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh intel-ucode curl xorg xorg-server go tlp ccache \
-  		xorg-xinit dialog nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget ttf-opensans \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 lightdm deepin deepin-extra
@@ -118,7 +118,7 @@ else
 	if [ $de = "i3" ]; then
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh amd-ucode curl xorg xorg-server go tlp termite \
-  		xorg-xinit dialog nvidia nvidia-settings wget bmon \
+  		xorg-xinit dialog nvidia nvidia-settings wget bmon ttf-opensans \
   		pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
   		kitty libsecret gnome-keyring libgnome-keyring dnsutils \
   		os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
@@ -128,14 +128,14 @@ else
 	elif [ $de = "GNOME" ]; then
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh amd-ucode curl xorg xorg-server go tlp ccache \
-  		xorg-xinit dialog nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget ttf-opensans \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 gnome gnome-extra gdm
 	else
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh amd-ucode curl xorg xorg-server go tlp ccache \
-  		xorg-xinit dialog nvidia nvidia-settings wget \
+  		xorg-xinit dialog nvidia nvidia-settings wget ttf-opensans \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 lightdm deepin deepin-extra
