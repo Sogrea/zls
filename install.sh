@@ -31,7 +31,7 @@ install_type=$(printf "Intel\nAMD" | fzf --preview 'echo -e "Using Intel or AMD 
 
 # Choose which disk you wanna use
 disk=$(lsblk -lno NAME,TYPE,SIZE,MOUNTPOINT | grep "disk" | fzf --preview 'echo -e "Choose the disk you want to use.\nKeep in mind it will follow this rules:\n\n500M: boot partition\n100G: root partition\nAll remaining space for home partition"' | \
-sed -e 's/\/dev\/\(.*\):/\1/') &> /dev/null
+sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}')
 
 # Formatting disk
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/$disk
