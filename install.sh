@@ -27,12 +27,11 @@ pacman -Syyy
 pacman -S --noconfirm fzf
 
 # Choose which type of install you're going to use
-install_type=$(printf "Intel\nAMD" | fzf)
+install_type=$(printf "Intel\nAMD" | fzf --preview 'echo -e "Using Intel or AMD CPU?"')
 
 # Choose which disk you wanna use
-disk=$(sudo fdisk -l | grep 'Disk /dev/' | awk '{print $2,$3,$4}' | sed 's/,$//' | \
-fzf --preview 'echo -e "Choose the disk you want to use.\nKeep in mind it will follow this rules:\n\n500M: boot partition\n100G: root partition\nAll remaining space for home partition"' | \
-sed -e 's/\/dev\/\(.*\):/\1/' | awk '{print $1}')
+disk=$(lsblk -lno NAME,TYPE,SIZE,MOUNTPOINT | grep "disk" | fzf --preview 'echo -e "Choose the disk you want to use.\nKeep in mind it will follow this rules:\n\n500M: boot partition\n100G: root partition\nAll remaining space for home partition"' | \
+sed -e 's/\/dev\/\(.*\):/\1/') &> /dev/null
 
 # Formatting disk
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/$disk
@@ -85,7 +84,7 @@ else
 fi
 
 # Choosing desktop environment
-de=$(printf "Deepin\ni3\nGNOME" | fzf)
+de=$(printf "Deepin\ni3\nGNOME" | fzf --preview 'echo -e "Choose a DE/WM"')
 
 # Pacstrap-ping
 if [ $install_type = "Intel" ]; then
