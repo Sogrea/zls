@@ -92,7 +92,7 @@ if [ $install_type = "Intel" ]; then
 	if [ $de = "i3" ]; then
   		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh intel-ucode curl xorg xorg-server go tlp termite \
-  		xorg-xinit dialog nvidia nvidia-settings wget bmon \
+  		xorg-xinit dialog nvidia nvidia-settings wget bmon chromium \
   		pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
   		kitty libsecret gnome-keyring libgnome-keyring dnsutils \
   		os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
@@ -118,7 +118,7 @@ else
 	if [ $de = "i3" ]; then
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh amd-ucode curl xorg xorg-server go tlp termite \
-  		xorg-xinit dialog nvidia nvidia-settings wget bmon \
+  		xorg-xinit dialog nvidia nvidia-settings wget bmon chromium \
   		pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
   		kitty libsecret gnome-keyring libgnome-keyring dnsutils \
   		os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
@@ -183,9 +183,6 @@ arch-chroot /mnt echo "127.0.1.1 ${machine}.localdomain ${machine}" >> /mnt/etc/
 # Making sudoers do sudo stuff
 arch-chroot /mnt sed -ie 's/# %wheel ALL=(ALL)/%wheel ALL=(ALL)/g' /etc/sudoers
 
-# Choose your username
-arch-chroot /mnt read -p "Insert your username (only one word):" username
-
 # Make initframs
 arch-chroot /mnt mkinitcpio -p linux
 
@@ -194,11 +191,8 @@ echo "Insert password for root:"
 arch-chroot /mnt passwd
 
 # Making user
-arch-chroot /mnt useradd -m -G wheel ${username}
-
-# Setting user password
-echo "Insert password for ${username}:"
-arch-chroot /mnt passwd ${username}
+arch-chroot /mnt useradd -m -G wheel zetaemme
+arch-chroot /mnt passwd zetaemme
 
 # Installing grub bootloader
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable
@@ -228,7 +222,7 @@ fi
 # Making i3 default for startx (only if i3 is DE)
 if [ $de = "i3" ]; then
 	arch-chroot /mnt echo "exec i3" >> /mnt/root/.xinitrc
-	arch-chroot /mnt echo "exec i3" > /mnt/home/${username}/.xinitrc
+	arch-chroot /mnt echo "exec i3" > /mnt/home/zetaemme/.xinitrc
 fi
 
 # Makepkg optimization
@@ -236,55 +230,55 @@ arch-chroot /mnt sed -i -e 's/#MAKEFLAGS="-j2"/MAKEFLAGS=-j'$(nproc --ignore 1)'
 arch-chroot /mnt sed -ie 's/!ccache/ccache/g' /etc/makepkg.conf
 
 # Installing yay
-arch-chroot /mnt sudo -u $username mkdir /home/${username}/yay_tmp_install
-arch-chroot /mnt sudo -u ${username} git clone https://aur.archlinux.org/yay.git /home/${username}/yay_tmp_install
-arch-chroot /mnt sudo -u ${username} cd /home/${username}/yay_tmp_install && yes | makepkg -si
-arch-chroot /mnt rm -rf /home/${username}/yay_tmp_install
+arch-chroot /mnt sudo -u zetaemme mkdir /home/zetaemme/yay_tmp_install
+arch-chroot /mnt sudo -u zetaemme git clone https://aur.archlinux.org/yay.git /home/zetaemme/yay_tmp_install
+arch-chroot /mnt sudo -u zetaemme cd /home/zetaemme/yay_tmp_install && yes | makepkg -si
+arch-chroot /mnt rm -rf /home/zetaemme/yay_tmp_install
 
 if [ $de = "i3" ]; then
 	# Installing i3-gaps and polybar
-	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm i3-gaps 
-	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm polybar
-	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm brave-bin
-	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm otf-font-awesome
+	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm i3-gaps 
+	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm polybar
+	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm brave-bin
+	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm otf-font-awesome
 
 	# Installing fonts
-	arch-chroot /mnt sudo -u ${username} mkdir /home/${username}/fonts_tmp_folder
-	arch-chroot /mnt sudo -u ${username} sudo mkdir /usr/share/fonts/OTF/
+	arch-chroot /mnt sudo -u zetaemme mkdir /home/zetaemme/fonts_tmp_folder
+	arch-chroot /mnt sudo -u zetaemme sudo mkdir /usr/share/fonts/OTF/
 
 	# Material font
-	arch-chroot /mnt sudo -u ${username} "cd /home/${username}/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/Material.ttf"
-	arch-chroot /mnt sudo -u ${username} "sudo cp /home/${username}/fonts_tmp_folder/Material.ttf /usr/share/fonts/OTF/"
+	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/Material.ttf"
+	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/Material.ttf /usr/share/fonts/OTF/"
 	# Iosevka font
-	arch-chroot /mnt sudo -u ${username} "cd /home/${username}/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/iosevka-regular.ttf"
-	arch-chroot /mnt sudo -u ${username} "sudo cp /home/${username}/fonts_tmp_folder/iosevka-regular.ttf /usr/share/fonts/OTF/"
+	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/iosevka-regular.ttf"
+	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/iosevka-regular.ttf /usr/share/fonts/OTF/"
 	# Meslo for powerline font
-	arch-chroot /mnt sudo -u ${username} "cd /home/${username}/fonts_tmp_folder && wget https://github.com/powerline/fonts/blob/master/Meslo%20Slashed/Meslo%20LG%20M%20Regular%20for%20Powerline.ttf"
-	arch-chroot /mnt sudo -u ${username} "sudo cp /home/${username}/fonts_tmp_folder/Meslo\ LG\ M\ Regular\ for\ Powerline.ttf /usr/share/fonts/OTF/"
+	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/powerline/fonts/blob/master/Meslo%20Slashed/Meslo%20LG%20M%20Regular%20for%20Powerline.ttf"
+	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/Meslo\ LG\ M\ Regular\ for\ Powerline.ttf /usr/share/fonts/OTF/"
 	# Removing fonts tmp folder
-	arch-chroot /mnt sudo -u ${username} rm -rf /home/${username}/fonts_tmp_folder
+	arch-chroot /mnt sudo -u zetaemme rm -rf /home/zetaemme/fonts_tmp_folder
 
 	# Installing configs
-	arch-chroot /mnt sudo -u ${username} mkdir /home/${username}/GitHub
-	arch-chroot /mnt sudo -u ${username} git clone https://github.com/zetaemme/dotfiles /home/${username}/GitHub/dotfiles
-	arch-chroot /mnt sudo -u ${username} git clone https://github.com/zetaemme/zls /home/${username}/GitHub/zls
-	arch-chroot /mnt sudo -u ${username} "chmod +x /home/${username}/GitHub/zls/install_configs.sh"
-	arch-chroot /mnt sudo -u ${username} /bin/zsh -c "cd /home/${username}/GitHub/zls && ./install_configs.sh"
+	arch-chroot /mnt sudo -u zetaemme mkdir /home/zetaemme/GitHub
+	arch-chroot /mnt sudo -u zetaemme git clone https://github.com/zetaemme/dotfiles /home/zetaemme/GitHub/dotfiles
+	arch-chroot /mnt sudo -u zetaemme git clone https://github.com/zetaemme/zls /home/zetaemme/GitHub/zls
+	arch-chroot /mnt sudo -u zetaemme "chmod +x /home/zetaemme/GitHub/zls/install_configs.sh"
+	arch-chroot /mnt sudo -u zetaemme /bin/zsh -c "cd /home/zetaemme/GitHub/zls && ./install_configs.sh"
 
 	# Setting lightdm greeter
-	arch-chroot /mnt sudo -u ${username} sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
-	arch-chroot /mnt sudo -u ${username} sed -i '102s/^greeter-session=/ s/$/lightdm-webkit2-greeter/' /etc/lightdm/lightdm.conf
+	arch-chroot /mnt sudo -u zetaemme sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
+	arch-chroot /mnt sudo -u zetaemme sed -i '102s/^greeter-session=/ s/$/lightdm-webkit2-greeter/' /etc/lightdm/lightdm.conf
 
-	arch-chroot /mnt sudo -u ${username} sed -i '111s/^#.*session-startup-script=/s/^#//' /etc/lightdm/lightdm.conf
-	arch-chroot /mnt sudo -u ${username} sed -i '111s/^session-startup-script=/ s/$//home/zetaemme/.fehbg' /etc/lightdm/lightdm.conf
+	arch-chroot /mnt sudo -u zetaemme sed -i '111s/^#.*session-startup-script=/s/^#//' /etc/lightdm/lightdm.conf
+	arch-chroot /mnt sudo -u zetaemme sed -i '111s/^session-startup-script=/ s/$//home/zetaemme/.fehbg' /etc/lightdm/lightdm.conf
 
-	arch-chroot /mnt sudo -u ${username} sed -i '21s/^webkit_theme/ s/$/ litarvan' /etc/lightdm/lightdm-webkit2-greeter.conf
+	arch-chroot /mnt sudo -u zetaemme sed -i '21s/^webkit_theme/ s/$/ litarvan' /etc/lightdm/lightdm-webkit2-greeter.conf
 else
-	arch-chroot /mnt sudo -u ${username} yay -S --noconfirm brave-bin
+	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm brave-bin
 	
 	if [ $de = "Deepin" ]; then
-		arch-chroot /mnt sudo -u ${username} sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
-		arch-chroot /mnt sudo -u ${username} sed -i '102s/^greeter-session=/ s/$/lightdm-deepin-greeter/' /etc/lightdm/lightdm.conf
+		arch-chroot /mnt sudo -u zetaemme sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
+		arch-chroot /mnt sudo -u zetaemme sed -i '102s/^greeter-session=/ s/$/lightdm-deepin-greeter/' /etc/lightdm/lightdm.conf
 	fi
 fi
 
