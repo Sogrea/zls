@@ -239,7 +239,6 @@ if [ $de = "i3" ]; then
 	# Installing i3-gaps and polybar
 	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm i3-gaps 
 	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm polybar
-	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm brave-bin
 	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm otf-font-awesome
 
 	# Installing fonts
@@ -253,8 +252,8 @@ if [ $de = "i3" ]; then
 	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/iosevka-regular.ttf"
 	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/iosevka-regular.ttf /usr/share/fonts/OTF/"
 	# Meslo for powerline font
-	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/powerline/fonts/blob/master/Meslo%20Slashed/Meslo%20LG%20M%20Regular%20for%20Powerline.ttf"
-	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/Meslo\ LG\ M\ Regular\ for\ Powerline.ttf /usr/share/fonts/OTF/"
+	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Hasklig/Regular/complete/Hasklug%20Nerd%20Font%20Complete.otf"
+	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/Hasklug\ Nerd\ Font\ Complete.otf /usr/share/fonts/OTF/"
 	# Removing fonts tmp folder
 	arch-chroot /mnt sudo -u zetaemme rm -rf /home/zetaemme/fonts_tmp_folder
 
@@ -274,7 +273,16 @@ if [ $de = "i3" ]; then
 
 	arch-chroot /mnt sudo -u zetaemme sed -i '21s/^webkit_theme/ s/$/ litarvan' /etc/lightdm/lightdm-webkit2-greeter.conf
 else
-	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm brave-bin
+	# Installing fonts
+	arch-chroot /mnt sudo -u zetaemme mkdir /home/zetaemme/fonts_tmp_folder
+	arch-chroot /mnt sudo -u zetaemme sudo mkdir /usr/share/fonts/OTF/
+
+	# Meslo for powerline font
+	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Hasklig/Regular/complete/Hasklug%20Nerd%20Font%20Complete.otf"
+	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/Hasklug\ Nerd\ Font\ Complete.otf /usr/share/fonts/OTF/"
+
+	# Removing fonts tmp folder
+	arch-chroot /mnt sudo -u zetaemme rm -rf /home/zetaemme/fonts_tmp_folder
 	
 	if [ $de = "Deepin" ]; then
 		arch-chroot /mnt sudo -u zetaemme sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
