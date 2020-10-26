@@ -131,7 +131,8 @@ else
   		xorg-xinit dialog nvidia nvidia-settings wget ttf-opensans \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
-		linux linux-firmware linux-headers mesa gtk3 gnome gnome-extra gdm
+		linux linux-firmware linux-headers mesa gtk3 gnome gnome-extra gdm \
+		cups hplip
 	else
 		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh amd-ucode curl xorg xorg-server go tlp ccache \
@@ -217,6 +218,7 @@ else
 	arch-chroot /mnt systemctl enable NetworkManager.service
 	arch-chroot /mnt systemctl enable gdm.service
 	arch-chroot /mnt systemctl enable firewalld.service
+	arch-chroot /mnt systemctl enable org.cups.cupsd
 fi
 
 # Making i3 default for startx (only if i3 is DE)
