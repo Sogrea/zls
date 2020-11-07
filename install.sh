@@ -93,21 +93,21 @@ if [ $install_type = "Intel" ]; then
   		pacstrap /mnt base base-devel vim grub networkmanager \
   		git zsh intel-ucode curl xorg xorg-server go tlp termite \
   		xorg-xinit dialog nvidia nvidia-settings wget bmon chromium \
-  		pulseaudio pamixer light feh rofi neofetch xorg-xrandr \
+  		pulseaudio pamixer light feh rofi neofetch xorg-xrandr archlinux-keyring \
   		kitty libsecret gnome-keyring libgnome-keyring dnsutils \
   		os-prober efibootmgr ntfs-3g unzip wireless_tools ccache \
   		iw wpa_supplicant iwd ppp dhcpcd netctl linux linux-firmware \
   		linux-headers picom xf86-video-intel mesa bumblebee powertop \
   		gtk3 lightdm lightdm-webkit2-greeter lightdm-webkit2-greeter-litarvan
 	elif [ $de = "GNOME" ]; then
-		pacstrap /mnt base base-devel vim grub networkmanager \
+		pacstrap /mnt base base-devel vim grub networkmanager archlinux-keyring \
   		git zsh intel-ucode curl xorg xorg-server go tlp ccache \
   		xorg-xinit dialog nvidia nvidia-settings wget ttf-opensans \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 gnome gnome-extra gdm
 	else
-		pacstrap /mnt base base-devel vim grub networkmanager \
+		pacstrap /mnt base base-devel vim grub networkmanager archlinux-keyring \
   		git zsh intel-ucode curl xorg xorg-server go tlp ccache \
   		xorg-xinit dialog nvidia nvidia-settings wget ttf-opensans \
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
