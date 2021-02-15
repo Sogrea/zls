@@ -199,8 +199,8 @@ echo "Insert password for root:"
 arch-chroot /mnt passwd
 
 # Making user
-arch-chroot /mnt useradd -m -G wheel zetaemme
-arch-chroot /mnt passwd zetaemme
+arch-chroot /mnt useradd -m -G wheel andrea
+arch-chroot /mnt passwd 
 
 # Installing grub bootloader
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable
@@ -243,8 +243,8 @@ fi
 arch-chroot /mnt sed -i -e 's/#MAKEFLAGS="-j2"/MAKEFLAGS=-j'$(nproc --ignore 1)'/' -e 's/-march=x86-64 -mtune=generic/-march=native/' -e 's/xz -c -z/xz -c -z -T '$(nproc --ignore 1)'/' /etc/makepkg.conf
 arch-chroot /mnt sed -ie 's/!ccache/ccache/g' /etc/makepkg.conf
 
-arch-chroot /mnt sudo -u zetaemme sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
-arch-chroot /mnt sudo -u zetaemme sed -i '102s/^greeter-session=/ s/$/lightdm-deepin-greeter/' /etc/lightdm/lightdm.conf
+arch-chroot /mnt sudo -u andrea sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
+arch-chroot /mnt sudo -u andrea sed -i '102s/^greeter-session=/ s/$/lightdm-deepin-greeter/' /etc/lightdm/lightdm.conf
 
 # Unmounting all mounted partitions
 umount -R /mnt
