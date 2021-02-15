@@ -85,7 +85,7 @@ else
 fi
 
 # Choosing desktop environment
-de=$(printf "Deepin\ni3\nGNOME" | fzf --preview 'echo -e "Choose a DE/WM"')
+de=$(printf "Deepin\ni3\nGNOME\nPlasma" | fzf --preview 'echo -e "Choose a DE/WM"')
 
 # Pacstrap-ping
 if [ $install_type = "Intel" ]; then
@@ -106,6 +106,13 @@ if [ $install_type = "Intel" ]; then
 		pulseaudio neofetch xorg-xrandr kitty os-prober ntfs-3g \
 		efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp dhcpcd netctl \
 		linux linux-firmware linux-headers mesa gtk3 gnome gnome-extra gdm
+	elif [ $de = "Plasma" ]; then
+		pacstrap /mnt base base-devel vim grub networkmanager archlinux-keyring \
+		git zsh intel-ucode curl tlp ccache dialog wget pulseaudio neofetch \
+		os-prober ntfs-3g efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp \
+		dhcpcd netctl linux linux-firmware linux-headers xorg xorg-server \
+		xorg-xrandr plasma plasma-wayland-session egl-wayland xorg-xwayland \
+		kde-applications mesa gtk3 lightdm lightdm-webkit2-greeter lightdm-webkit2-greeter-litarvan
 	else
 		pacstrap /mnt base base-devel vim grub networkmanager archlinux-keyring \
   		git zsh intel-ucode curl xorg xorg-server go tlp ccache \
@@ -213,6 +220,11 @@ elif [ $de = "Deepin" ]; then
 	arch-chroot /mnt systemctl enable NetworkManager.service
 	arch-chroot /mnt systemctl enable lightdm.service
 	arch-chroot /mnt systemctl enable firewalld.service
+elif [ $de = "Plasma" ]; then
+	arch-chroot /mnt systemctl enable tlp.service
+	arch-chroot /mnt systemctl enable NetworkManager.service
+	arch-chroot /mnt systemctl enable lightdm.service
+	arch-chroot /mnt systemctl enable firewalld.service
 else
 	arch-chroot /mnt systemctl enable tlp.service
 	arch-chroot /mnt systemctl enable NetworkManager.service
@@ -231,66 +243,8 @@ fi
 arch-chroot /mnt sed -i -e 's/#MAKEFLAGS="-j2"/MAKEFLAGS=-j'$(nproc --ignore 1)'/' -e 's/-march=x86-64 -mtune=generic/-march=native/' -e 's/xz -c -z/xz -c -z -T '$(nproc --ignore 1)'/' /etc/makepkg.conf
 arch-chroot /mnt sed -ie 's/!ccache/ccache/g' /etc/makepkg.conf
 
-# Installing yay
-arch-chroot /mnt sudo -u zetaemme mkdir /home/zetaemme/yay_tmp_install
-arch-chroot /mnt sudo -u zetaemme git clone https://aur.archlinux.org/yay.git /home/zetaemme/yay_tmp_install
-arch-chroot /mnt sudo -u zetaemme cd /home/zetaemme/yay_tmp_install && yes | makepkg -si
-arch-chroot /mnt rm -rf /home/zetaemme/yay_tmp_install
-
-if [ $de = "i3" ]; then
-	# Installing i3-gaps and polybar
-	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm i3-gaps 
-	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm polybar
-	arch-chroot /mnt sudo -u zetaemme yay -S --noconfirm otf-font-awesome
-
-	# Installing fonts
-	arch-chroot /mnt sudo -u zetaemme mkdir /home/zetaemme/fonts_tmp_folder
-	arch-chroot /mnt sudo -u zetaemme sudo mkdir /usr/share/fonts/OTF/
-
-	# Material font
-	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/Material.ttf"
-	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/Material.ttf /usr/share/fonts/OTF/"
-	# Iosevka font
-	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/adi1090x/polybar-themes/blob/master/polybar-8/fonts/iosevka-regular.ttf"
-	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/iosevka-regular.ttf /usr/share/fonts/OTF/"
-	# Meslo for powerline font
-	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Hasklig/Regular/complete/Hasklug%20Nerd%20Font%20Complete.otf"
-	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/Hasklug\ Nerd\ Font\ Complete.otf /usr/share/fonts/OTF/"
-	# Removing fonts tmp folder
-	arch-chroot /mnt sudo -u zetaemme rm -rf /home/zetaemme/fonts_tmp_folder
-
-	# Installing configs
-	arch-chroot /mnt sudo -u zetaemme mkdir /home/zetaemme/GitHub
-	arch-chroot /mnt sudo -u zetaemme git clone https://github.com/zetaemme/dotfiles /home/zetaemme/GitHub/dotfiles
-	arch-chroot /mnt sudo -u zetaemme git clone https://github.com/zetaemme/zls /home/zetaemme/GitHub/zls
-	arch-chroot /mnt sudo -u zetaemme "chmod +x /home/zetaemme/GitHub/zls/install_configs.sh"
-	arch-chroot /mnt sudo -u zetaemme /bin/zsh -c "cd /home/zetaemme/GitHub/zls && ./install_configs.sh"
-
-	# Setting lightdm greeter
-	arch-chroot /mnt sudo -u zetaemme sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
-	arch-chroot /mnt sudo -u zetaemme sed -i '102s/^greeter-session=/ s/$/lightdm-webkit2-greeter/' /etc/lightdm/lightdm.conf
-
-	arch-chroot /mnt sudo -u zetaemme sed -i '111s/^#.*session-startup-script=/s/^#//' /etc/lightdm/lightdm.conf
-	arch-chroot /mnt sudo -u zetaemme sed -i '111s/^session-startup-script=/ s/$//home/zetaemme/.fehbg' /etc/lightdm/lightdm.conf
-
-	arch-chroot /mnt sudo -u zetaemme sed -i '21s/^webkit_theme/ s/$/ litarvan' /etc/lightdm/lightdm-webkit2-greeter.conf
-else
-	# Installing fonts
-	arch-chroot /mnt sudo -u zetaemme mkdir /home/zetaemme/fonts_tmp_folder
-	arch-chroot /mnt sudo -u zetaemme sudo mkdir /usr/share/fonts/OTF/
-
-	# Meslo for powerline font
-	arch-chroot /mnt sudo -u zetaemme "cd /home/zetaemme/fonts_tmp_folder && wget https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Hasklig/Regular/complete/Hasklug%20Nerd%20Font%20Complete.otf"
-	arch-chroot /mnt sudo -u zetaemme "sudo cp /home/zetaemme/fonts_tmp_folder/Hasklug\ Nerd\ Font\ Complete.otf /usr/share/fonts/OTF/"
-
-	# Removing fonts tmp folder
-	arch-chroot /mnt sudo -u zetaemme rm -rf /home/zetaemme/fonts_tmp_folder
-	
-	if [ $de = "Deepin" ]; then
-		arch-chroot /mnt sudo -u zetaemme sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
-		arch-chroot /mnt sudo -u zetaemme sed -i '102s/^greeter-session=/ s/$/lightdm-deepin-greeter/' /etc/lightdm/lightdm.conf
-	fi
-fi
+arch-chroot /mnt sudo -u zetaemme sed -i '102s/^#.*greeter-session=/s/^#//' /etc/lightdm/lightdm.conf
+arch-chroot /mnt sudo -u zetaemme sed -i '102s/^greeter-session=/ s/$/lightdm-deepin-greeter/' /etc/lightdm/lightdm.conf
 
 # Unmounting all mounted partitions
 umount -R /mnt
