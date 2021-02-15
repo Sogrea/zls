@@ -110,8 +110,8 @@ if [ $install_type = "Intel" ]; then
 		pacstrap /mnt base base-devel vim grub networkmanager archlinux-keyring \
 		git zsh intel-ucode curl tlp ccache dialog wget pulseaudio neofetch \
 		os-prober ntfs-3g efibootmgr unzip wireless_tools iw wpa_supplicant iwd ppp \
-		dhcpcd netctl linux linux-firmware linux-headers xorg xorg-server \
-		xorg-xrandr plasma plasma-wayland-session egl-wayland xorg-xwayland \
+		dhcpcd netctl linux linux-firmware linux-headers xorg \
+		plasma plasma-wayland-session egl-wayland xorg-xwayland \
 		kde-applications mesa gtk3 lightdm lightdm-webkit2-greeter lightdm-webkit2-greeter-litarvan
 	else
 		pacstrap /mnt base base-devel vim grub networkmanager archlinux-keyring \
